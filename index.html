@@ -1,6 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spilled Coffee Syndicate</title>
+    <style>
+        ::selection {
+            background-color: white;
+            color: black;
+        }
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-size: 14px;
+            overflow: hidden;
+            position: relative;
+        }
+        .frame {
+            background-color: #000;
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+            border: 1px solid #fff;
+            box-shadow: 2px 2px 0 0 #000000, 3px 3px 0 0 #fff;
+            position: relative;
+        }
+        h1 {
+            font-size: 16px;
+            font-weight: normal;
+            margin: 0 0 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn {
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 5px 15px;
+            font-family: 'Courier New', monospace;
+            margin-top: 15px;
+            cursor: pointer;
+            font-size: 14px;
+            text-transform: uppercase;
+            box-shadow:2px 2px 0 0 #000000, 3px 3px 0 0 #fff;
+            text-decoration: none;
+            position: relative;
+        }
+        .btn:hover {
+            background: #fff;
+            color: #000;
+        }
+        .btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 
+                0px 0px 0 0 #fff,
+                1px 1px 0 0 #fff;
+        }
+        
+    </style>
+</head>
 <body>
-<h1>Hello World</h1>
+    <div class="frame">
+        <h1>Spilled Coffee Syndicate</h1>
+        <a href="https://forms.gle/bsRtUgfBr8dYNaGr7" class="btn">CONTACT US</a>
+    </div>
 </body>
 </html>
