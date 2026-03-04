@@ -1,0 +1,32 @@
+{
+  "name": "spilledcoffeesyndicate",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "deploy": "next build && node -e \"const fs=require('fs'); const p=require('path'); const rimraf=(d)=>{if(fs.existsSync(d))fs.rmSync(d,{recursive:true})}; rimraf('_next'); rimraf('404.html'); rimraf('404'); fs.readdirSync('out').forEach(f=>{fs.cpSync(p.join('out',f), f, {recursive:true})}); fs.writeFileSync('.nojekyll',''); console.log('Deployed to root. Commit and push for GitHub Pages.');\"",
+    "auth:hash": "node scripts/auth-hash.js"
+  },
+  "dependencies": {
+    "framer-motion": "^11.0.0",
+    "gsap": "^3.14.2",
+    "lucide-react": "^0.576.0",
+    "motion": "^12.34.5",
+    "next": "^16.1.6",
+    "react": "^18.2.0",
+    "react-countup": "^6.5.3",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.0.0"
+  }
+}
