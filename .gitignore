@@ -44,8 +44,16 @@ coverage/
 .next/
 _next/
 out/
+docs/
 .vercel
 .swc/
+_not-found/
+__next.*.txt
+**/__next.*.txt
+index.txt
+.nojekyll
+!/public/.nojekyll
+!/public/CNAME
 
 # Misc
 *.local

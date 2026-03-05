@@ -1,0 +1,12 @@
+export { Faq } from './faq';
+export { FinalCta } from './final-cta';
+export { Footer } from './footer';
+export { Header } from './header';
+export { Hero } from './hero';
+export { Portfolio } from './portfolio';
+export { PricingCalculator } from './pricing-calculator';
+export { ProblemSolution } from './problem-solution';
+export { Process } from './process';
+export { SocialProof } from './social-proof';
+export { StickyCta } from './sticky-cta';
+export { TechStack } from './tech-stack';
