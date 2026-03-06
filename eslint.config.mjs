@@ -53,7 +53,6 @@ const nodeCommonJsConfig = defineConfig([
         name: 'project/node-commonjs',
         files: [
             'next.config.js',
-            'jest.config.js',
             'postcss.config.js',
             'tailwind.config.js',
             'scripts/**/*.js',

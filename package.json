@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "jest",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "auth:hash": "node scripts/auth-hash.js"
   },
@@ -26,17 +26,18 @@
     "@tailwindcss/postcss": "^4.2.1",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",
-    "@types/jest": "^30.0.0",
     "@types/node": "^25.3.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^4.5.2",
     "autoprefixer": "^10.4.0",
     "eslint": "^9.39.3",
     "eslint-config-next": "^16.1.6",
-    "jest": "^30.2.0",
-    "jest-environment-jsdom": "^30.2.0",
+    "jsdom": "^28.1.0",
     "postcss": "^8.4.0",
     "tailwindcss": "^4.2.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.4"
   }
 }

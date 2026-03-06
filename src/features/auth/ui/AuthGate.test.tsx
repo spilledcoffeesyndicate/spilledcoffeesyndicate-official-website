@@ -1,22 +1,20 @@
+import { vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { AuthGate } from './AuthGate';
 
-jest.mock('../lib/hash-password', () => ({
-  hashPassword: jest.fn(),
+const mockHashPassword = vi.hoisted(() => vi.fn());
+vi.mock('../lib/hash-password', () => ({
+  hashPassword: mockHashPassword,
 }));
-
-const { hashPassword } = jest.requireMock('../lib/hash-password') as {
-  hashPassword: jest.Mock;
-};
 
 describe('AuthGate', () => {
   beforeEach(() => {
     sessionStorage.clear();
-    hashPassword.mockReset();
+    mockHashPassword.mockReset();
   });
 
   it('shows error on invalid password', async () => {
-    hashPassword.mockResolvedValue('invalid-hash');
+    mockHashPassword.mockResolvedValue('invalid-hash');
     render(
       <AuthGate>
         <div>protected content</div>
@@ -38,7 +36,7 @@ describe('AuthGate', () => {
   });
 
   it('renders protected content on valid password', async () => {
-    hashPassword.mockResolvedValue('631b94b7432ce4279bb1cef3bc8610aaedb2c361dfacaeb8d1b66d8666f6b7d2');
+    mockHashPassword.mockResolvedValue('631b94b7432ce4279bb1cef3bc8610aaedb2c361dfacaeb8d1b66d8666f6b7d2');
     render(
       <AuthGate>
         <div>protected content</div>

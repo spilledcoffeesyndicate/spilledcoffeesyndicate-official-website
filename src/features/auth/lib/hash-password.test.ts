@@ -1,4 +1,4 @@
-/** @jest-environment node */
+/** @vitest-environment node */
 import { hashPassword } from './hash-password';
 
 describe('hashPassword', () => {
