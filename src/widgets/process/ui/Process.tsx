@@ -18,16 +18,9 @@ export function Process() {
           <p className="text-white/70 max-w-2xl mx-auto">3-step process from brief to launch</p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="grid md:grid-cols-3 gap-8">
           {PROCESS_STEPS.map((step, index) => (
-            <motion.div
-              key={step.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="relative"
-            >
+            <div key={step.title} className="relative">
               <SpotlightCard
                 spotlightColor="rgba(34, 197, 94, 0.15)"
                 className={`!p-6 !rounded-lg !border !bg-transparent ${
@@ -46,9 +39,9 @@ export function Process() {
                 </ul>
                 {index < PROCESS_STEPS.length - 1 ? <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-px bg-white/20" /> : null}
               </SpotlightCard>
-            </motion.div>
+            </div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

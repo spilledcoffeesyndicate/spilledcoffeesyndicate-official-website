@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
+import { useAnimationPerformanceGate } from '@/shared/lib';
 import styles from './Lightning.module.css';
 
 type LightningProps = {
@@ -13,17 +14,15 @@ type LightningProps = {
 
 export function Lightning({ hue = 130, xOffset = 0, speed = 1, intensity = 1, size = 1 }: LightningProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const { shouldAnimate, isLowPerformanceDevice } = useAnimationPerformanceGate({
+    targetRef: canvasRef,
+    rootMargin: '200px',
+    disableLowPerformanceGate: true,
+  });
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const resizeCanvas = () => {
-      canvas.width = canvas.clientWidth;
-      canvas.height = canvas.clientHeight;
-    };
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    if (!canvas || !shouldAnimate) return;
 
     const gl = canvas.getContext('webgl');
     if (!gl) return;
@@ -146,11 +145,38 @@ export function Lightning({ hue = 130, xOffset = 0, speed = 1, intensity = 1, si
 
     const startTime = performance.now();
     let frameId = 0;
+    let lastRenderTime = 0;
+    let canvasWidth = 0;
+    let canvasHeight = 0;
+    const targetFps = isLowPerformanceDevice ? 20 : 30;
+    const frameInterval = 1000 / targetFps;
 
-    const render = () => {
+    const resizeCanvas = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, isLowPerformanceDevice ? 1 : 1.5);
+      const width = Math.max(1, Math.floor(canvas.clientWidth * dpr));
+      const height = Math.max(1, Math.floor(canvas.clientHeight * dpr));
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+      }
+      canvasWidth = width;
+      canvasHeight = height;
+    };
+
+    resizeCanvas();
+
+    const resizeObserver = new ResizeObserver(() => {
       resizeCanvas();
-      gl.viewport(0, 0, canvas.width, canvas.height);
-      gl.uniform2f(iResolutionLocation, canvas.width, canvas.height);
+    });
+    resizeObserver.observe(canvas);
+
+    const render = (frameTime: number) => {
+      frameId = requestAnimationFrame(render);
+      if (frameTime - lastRenderTime < frameInterval) return;
+      lastRenderTime = frameTime;
+
+      gl.viewport(0, 0, canvasWidth, canvasHeight);
+      gl.uniform2f(iResolutionLocation, canvasWidth, canvasHeight);
       const currentTime = performance.now();
       gl.uniform1f(iTimeLocation, (currentTime - startTime) / 1000);
       gl.uniform1f(uHueLocation, hue);
@@ -159,15 +185,18 @@ export function Lightning({ hue = 130, xOffset = 0, speed = 1, intensity = 1, si
       gl.uniform1f(uIntensityLocation, intensity);
       gl.uniform1f(uSizeLocation, size);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
-      frameId = requestAnimationFrame(render);
     };
     frameId = requestAnimationFrame(render);
 
     return () => {
       cancelAnimationFrame(frameId);
-      window.removeEventListener('resize', resizeCanvas);
+      resizeObserver.disconnect();
+      gl.deleteBuffer(vertexBuffer);
+      gl.deleteProgram(program);
+      gl.deleteShader(vertexShader);
+      gl.deleteShader(fragmentShader);
     };
-  }, [hue, intensity, size, speed, xOffset]);
+  }, [hue, intensity, isLowPerformanceDevice, shouldAnimate, size, speed, xOffset]);
 
   return <canvas ref={canvasRef} className={styles.container} />;
 }

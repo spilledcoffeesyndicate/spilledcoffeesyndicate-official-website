@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { PORTFOLIO_PROJECTS } from '@/entities/portfolio';
+import { MVP_DELIVERY_HOURS } from '@/shared/config';
 import { GradientText, PixelBlast, SpotlightCard } from '@/shared/ui';
 
 export function Portfolio() {
@@ -17,11 +18,11 @@ export function Portfolio() {
           <p className="text-white/70">Real projects. Real deadlines.</p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {PORTFOLIO_PROJECTS.map((project, index) => {
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="grid md:grid-cols-3 gap-6">
+          {PORTFOLIO_PROJECTS.map((project) => {
             const Icon = project.icon;
             return (
-              <motion.div key={project.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.1 }}>
+              <div key={project.title}>
                 <SpotlightCard
                   spotlightColor="rgba(34, 197, 94, 0.15)"
                   className="group !p-6 !rounded-lg !border-white/10 hover:!border-accent-500/50 !bg-white/5 !transition-colors"
@@ -29,7 +30,7 @@ export function Portfolio() {
                   <div className="aspect-video bg-white/5 rounded mb-4 flex items-center justify-center">
                     <Icon className="w-16 h-16 text-white/30 group-hover:text-accent-500/50 transition" strokeWidth={1.5} />
                   </div>
-                  <div className="font-mono text-accent-400 text-xs mb-2">Built in 48 hours</div>
+                  <div className="font-mono text-accent-400 text-xs mb-2">Built in {MVP_DELIVERY_HOURS} hours</div>
                   <h3 className="font-semibold font-mono tracking-tight mb-2">{project.title}</h3>
                   <p className="text-sm text-white/70 mb-4">{project.description}</p>
                   <div className="flex flex-wrap gap-2">
@@ -40,10 +41,10 @@ export function Portfolio() {
                     ))}
                   </div>
                 </SpotlightCard>
-              </motion.div>
+              </div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </PixelBlast>
   );

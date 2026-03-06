@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
-import { EXTERNAL_LINKS } from '@/shared/config';
+import { BOOK_CALL_CTA, BOOK_CALL_SHORT_CTA, EXTERNAL_LINKS, GET_FREE_ESTIMATE_CTA } from '@/shared/config';
 import { useScrollThreshold } from '@/shared/lib';
 
 export function Header() {
@@ -48,10 +48,10 @@ export function Header() {
             FAQ
           </button>
           <a href="#estimate" className="px-4 py-2 bg-white text-black font-mono text-sm hover:bg-white/90 transition">
-            GET FREE ESTIMATE
+            {GET_FREE_ESTIMATE_CTA.toUpperCase()}
           </a>
           <a href={EXTERNAL_LINKS.calendly} className="px-4 py-2 border border-white/50 text-white font-mono text-sm hover:border-white transition">
-            BOOK CALL
+            {BOOK_CALL_SHORT_CTA.toUpperCase()}
           </a>
         </nav>
 
@@ -91,7 +91,7 @@ export function Header() {
                 FAQ
               </button>
               <a href={EXTERNAL_LINKS.calendly} className="text-left text-white/80">
-                Book 15-min Call
+                {BOOK_CALL_CTA}
               </a>
             </nav>
           </motion.div>

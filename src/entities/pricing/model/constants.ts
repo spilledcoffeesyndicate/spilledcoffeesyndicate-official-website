@@ -1,6 +1,7 @@
 import type { PricingFeature } from './types';
+import { BASE_MVP_PRICE_USD, SUPPORT_DAYS } from '@/shared/config';
 
-export const BASE_PRICE = 999;
+export const BASE_PRICE = BASE_MVP_PRICE_USD;
 
 export const PRICING_FEATURES: PricingFeature[] = [
   { id: 'auth', name: 'User authentication', price: 199 },
@@ -16,12 +17,12 @@ export const INCLUDED_ITEMS: string[] = [
   'GitHub repository access',
   'Deployed to production',
   'Basic SEO setup',
-  '30-day bug fixes included',
+  `${SUPPORT_DAYS}-day bug fixes included`,
   '2 rounds of revisions',
 ];
 
 export const EXCLUDED_ITEMS: string[] = [
   'Major changes after scope freeze',
   'Unspecified third-party integrations',
-  'Support after 30 days (available as separate package)',
+  `Support after ${SUPPORT_DAYS} days (available as separate package)`,
 ];

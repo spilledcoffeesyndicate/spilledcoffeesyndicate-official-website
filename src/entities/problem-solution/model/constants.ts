@@ -1,3 +1,5 @@
+import { MVP_DELIVERY_HOURS } from '@/shared/config';
+
 export type ProblemSolutionItem = {
   title: string;
   description: string;
@@ -11,7 +13,7 @@ export const PROBLEM_ITEMS: ProblemSolutionItem[] = [
 ];
 
 export const SOLUTION_ITEMS: ProblemSolutionItem[] = [
-  { title: '48-hour delivery', description: 'Pre-agreed scope, delivered on time' },
+  { title: `${MVP_DELIVERY_HOURS}-hour delivery`, description: 'Pre-agreed scope, delivered on time' },
   { title: 'Fixed-price packages', description: 'No hidden fees, zero surprises' },
   { title: 'Production-ready code', description: 'Clean, documented, maintainable' },
   { title: 'Scalable architecture', description: 'Built for growth from day one' },

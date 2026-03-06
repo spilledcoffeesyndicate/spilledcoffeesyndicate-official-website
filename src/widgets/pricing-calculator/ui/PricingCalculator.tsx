@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useCountUp } from 'react-countup';
 import { CheckCircle2, XCircle } from 'lucide-react';
 import { BASE_PRICE, EXCLUDED_ITEMS, INCLUDED_ITEMS, PRICING_FEATURES } from '@/entities/pricing';
+import { EXTERNAL_LINKS } from '@/shared/config';
 import { GradientText, PixelBlast, SpotlightCard } from '@/shared/ui';
 
 function PriceCountUp({ value }: { value: number }) {
@@ -85,7 +86,7 @@ export function PricingCalculator() {
               </div>
               <a
                 id="estimate"
-                href="https://forms.gle/bsRtUgfBr8dYNaGr7"
+                href={EXTERNAL_LINKS.estimateForm}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block w-full py-3 mt-4 bg-white text-black font-mono text-center hover:bg-white/90 transition"

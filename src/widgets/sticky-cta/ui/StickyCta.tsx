@@ -1,7 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { EXTERNAL_LINKS } from '@/shared/config';
+import { BOOK_CALL_SHORT_CTA, EXTERNAL_LINKS } from '@/shared/config';
 import { useScrollThreshold } from '@/shared/lib';
 
 export function StickyCta() {
@@ -21,7 +21,7 @@ export function StickyCta() {
               Get Estimate
             </a>
             <a href={EXTERNAL_LINKS.calendly} className="flex-1 py-3 border border-white text-white font-mono text-sm text-center hover:border-white transition">
-              Book Call
+              {BOOK_CALL_SHORT_CTA}
             </a>
           </div>
         </motion.div>

@@ -1,4 +1,5 @@
 import { FileText, LayoutDashboard, Store, type LucideIcon } from 'lucide-react';
+import { MVP_DELIVERY_HOURS } from '@/shared/config';
 
 export type PortfolioProject = {
   title: string;
@@ -11,7 +12,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
   {
     title: 'SaaS Dashboard MVP',
     icon: LayoutDashboard,
-    description: 'Admin panel with auth, user management, and analytics. Delivered in 48h.',
+    description: `Admin panel with auth, user management, and analytics. Delivered in ${MVP_DELIVERY_HOURS}h.`,
     tech: ['React', 'Next.js', 'Supabase'],
   },
   {
