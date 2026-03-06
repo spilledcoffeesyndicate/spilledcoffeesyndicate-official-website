@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import { AuthGate } from '@/features/auth';
+import { BRAND_NAME, FIXED_PRICE_NO_SURPRISES, FIXED_PRICE_SHORT, MVP_DELIVERY_HOURS, SITE_URL } from '@/shared/config';
 import { buildOrganizationJsonLd, buildWebsiteJsonLd } from '@/shared/lib/seo/json-ld';
 import './globals.css';
 
@@ -15,22 +16,22 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://spilledcoffeesyndicate.com'),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: 'MVP in 48 Hours | Spilled Coffee Syndicate - Fixed Price Development',
-    template: '%s | Spilled Coffee Syndicate',
+    default: `MVP in ${MVP_DELIVERY_HOURS} Hours | ${BRAND_NAME} - Fixed Price Development`,
+    template: `%s | ${BRAND_NAME}`,
   },
   description:
-    'Scope-fixed MVP in 48 hours. Fixed price, no surprises. We ship launch-ready web apps with React, Next.js. Trusted by founders worldwide.',
-  keywords: ['MVP development', 'rapid prototyping', '48-hour MVP', 'startup development', 'fixed-price web app', 'React MVP'],
+    `Scope-fixed MVP in ${MVP_DELIVERY_HOURS} hours. ${FIXED_PRICE_NO_SURPRISES} We ship launch-ready web apps with React, Next.js. Trusted by founders worldwide.`,
+  keywords: ['MVP development', 'rapid prototyping', `${MVP_DELIVERY_HOURS}-hour MVP`, 'startup development', 'fixed-price web app', 'React MVP'],
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: 'MVP in 48 Hours | Spilled Coffee Syndicate',
-    description: 'Scope-fixed MVP in 48 hours. Fixed price. No surprises.',
-    url: 'https://spilledcoffeesyndicate.com/',
-    siteName: 'Spilled Coffee Syndicate',
+    title: `MVP in ${MVP_DELIVERY_HOURS} Hours | ${BRAND_NAME}`,
+    description: `Scope-fixed MVP in ${MVP_DELIVERY_HOURS} hours. ${FIXED_PRICE_SHORT}`,
+    url: `${SITE_URL}/`,
+    siteName: BRAND_NAME,
     type: 'website',
   },
   twitter: {

@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { BOOK_CALL_CTA, GET_FREE_ESTIMATE_CTA, MVP_DELIVERY_HOURS, RESPONSE_TIME_HOURS } from '@/shared/config';
 import { ElectricBorder, Lightning } from '@/shared/ui';
 
 export function Hero() {
@@ -29,7 +30,7 @@ export function Hero() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="text-4xl md:text-5xl lg:text-6xl font-bold font-mono tracking-tight leading-tight mb-6"
         >
-          MVP Development in <span className="text-accent-400 font-mono">48 Hours</span>
+          MVP Development in <span className="text-accent-400 font-mono">{MVP_DELIVERY_HOURS} Hours</span>
         </motion.h1>
 
         <motion.p
@@ -38,7 +39,7 @@ export function Hero() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-lg text-white/80 max-w-2xl mx-auto mb-8"
         >
-          We ship a launch-ready MVP with pre-agreed scope in 48 hours, so you can validate fast. Fixed price. No surprises.
+          We ship a launch-ready MVP with pre-agreed scope in {MVP_DELIVERY_HOURS} hours, so you can validate fast. Fixed price. No surprises.
         </motion.p>
 
         <motion.div
@@ -49,18 +50,18 @@ export function Hero() {
         >
           <ElectricBorder color="#22c55e" borderRadius={4} className="inline-block">
             <a href="#calendly" className="block px-6 py-3 bg-transparent text-white font-mono font-medium hover:bg-white/10 transition border-0">
-              Book 15-min Call
+              {BOOK_CALL_CTA}
             </a>
           </ElectricBorder>
           <ElectricBorder color="#ffffff" borderRadius={4} className="inline-block">
             <a href="#calculator" className="block px-6 py-3 bg-white text-black font-mono font-medium hover:bg-white/90 transition">
-              Get Free Estimate
+              {GET_FREE_ESTIMATE_CTA}
             </a>
           </ElectricBorder>
         </motion.div>
 
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="mt-6 text-sm text-white/50 font-mono">
-          Response time: 1 hour
+          Response time: {RESPONSE_TIME_HOURS} hour
         </motion.p>
       </div>
     </section>

@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { PORTFOLIO_PROJECTS } from '@/entities/portfolio';
+import { MVP_DELIVERY_HOURS } from '@/shared/config';
 import { GradientText, PixelBlast, SpotlightCard } from '@/shared/ui';
 
 export function Portfolio() {
@@ -29,7 +30,7 @@ export function Portfolio() {
                   <div className="aspect-video bg-white/5 rounded mb-4 flex items-center justify-center">
                     <Icon className="w-16 h-16 text-white/30 group-hover:text-accent-500/50 transition" strokeWidth={1.5} />
                   </div>
-                  <div className="font-mono text-accent-400 text-xs mb-2">Built in 48 hours</div>
+                  <div className="font-mono text-accent-400 text-xs mb-2">Built in {MVP_DELIVERY_HOURS} hours</div>
                   <h3 className="font-semibold font-mono tracking-tight mb-2">{project.title}</h3>
                   <p className="text-sm text-white/70 mb-4">{project.description}</p>
                   <div className="flex flex-wrap gap-2">
