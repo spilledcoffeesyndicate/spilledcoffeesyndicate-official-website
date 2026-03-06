@@ -10,6 +10,11 @@ export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isScrolled = useScrollThreshold(80);
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setIsMobileMenuOpen(false);
+  };
+
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     setIsMobileMenuOpen(false);
@@ -25,9 +30,9 @@ export function Header() {
       }`}
     >
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="#" className="font-mono text-lg tracking-tight">
+        <button type="button" onClick={scrollToTop} className="font-mono text-lg tracking-tight">
           Spilled Coffee Syndicate
-        </a>
+        </button>
 
         <nav className="hidden md:flex items-center gap-8">
           <button onClick={() => scrollTo('calculator')} className="text-sm text-white/80 hover:text-white transition">

@@ -8,7 +8,7 @@ import { BASE_PRICE, EXCLUDED_ITEMS, INCLUDED_ITEMS, PRICING_FEATURES } from '@/
 import { GradientText, PixelBlast, SpotlightCard } from '@/shared/ui';
 
 function PriceCountUp({ value }: { value: number }) {
-  const countUpRef = useRef<HTMLSpanElement>(null);
+  const countUpRef = useRef<HTMLSpanElement>(null!);
   const { update } = useCountUp({
     ref: countUpRef,
     start: BASE_PRICE,

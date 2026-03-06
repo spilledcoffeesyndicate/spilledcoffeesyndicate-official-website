@@ -1,3 +1,4 @@
+/** @jest-environment node */
 import { hashPassword } from './hash-password';
 
 describe('hashPassword', () => {

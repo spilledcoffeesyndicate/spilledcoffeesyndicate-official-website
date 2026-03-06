@@ -9,7 +9,7 @@ describe('SpotlightCard', () => {
 
   it('updates css variables on mouse move', () => {
     render(<SpotlightCard>content</SpotlightCard>);
-    const element = screen.getByText('content').parentElement as HTMLDivElement;
+    const element = screen.getByText('content') as HTMLDivElement;
     fireEvent.mouseMove(element, { clientX: 100, clientY: 100 });
     expect(element.style.getPropertyValue('--mouse-x')).not.toBe('');
     expect(element.style.getPropertyValue('--mouse-y')).not.toBe('');

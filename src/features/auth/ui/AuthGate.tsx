@@ -1,19 +1,23 @@
 'use client';
 
-import { type FormEvent, useEffect, useState } from 'react';
+import { type FormEvent, useEffect, useRef, useState } from 'react';
 import { AUTH_PASSWORD_HASH, AUTH_STORAGE_KEY } from '../config/constants';
 import { hashPassword } from '../lib/hash-password';
 import type { AuthGateProps } from '../model/types';
 
 export function AuthGate({ children }: AuthGateProps) {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(() => {
+    if (typeof window === 'undefined') return null;
+    return sessionStorage.getItem(AUTH_STORAGE_KEY) === '1';
+  });
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const passwordInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    setIsAuthenticated(sessionStorage.getItem(AUTH_STORAGE_KEY) === '1');
-  }, []);
+    if (isAuthenticated !== false) return;
+    passwordInputRef.current?.focus();
+  }, [isAuthenticated]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -50,7 +54,7 @@ export function AuthGate({ children }: AuthGateProps) {
           onChange={(event) => setPassword(event.target.value)}
           placeholder="Your email password"
           className="w-full rounded-md border border-white/20 bg-black/50 px-4 py-3 text-white placeholder:text-white/40 focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
-          autoFocus
+          ref={passwordInputRef}
         />
         {error ? <p className="text-center text-sm text-red-400">{error}</p> : null}
         <button type="submit" className="w-full rounded-md bg-[var(--accent)] px-4 py-3 font-medium text-white transition hover:opacity-90">

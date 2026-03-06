@@ -1,6 +1,6 @@
 'use client';
 
-import { createElement, useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react';
+import { createElement, useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type JSX, type ReactNode } from 'react';
 import { gsap } from 'gsap';
 import styles from './TextType.module.css';
 
@@ -9,9 +9,11 @@ type VariableSpeed = {
   max: number;
 };
 
+type IntrinsicTagName = Extract<keyof JSX.IntrinsicElements, string>;
+
 type TextTypeProps = {
   text: string | string[];
-  as?: keyof JSX.IntrinsicElements | ComponentType<{ children?: ReactNode }>;
+  as?: IntrinsicTagName | ComponentType<{ children?: ReactNode; className?: string }>;
   typingSpeed?: number;
   initialDelay?: number;
   pauseDuration?: number;
@@ -56,7 +58,7 @@ export function TextType({
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(!startOnVisible);
   const cursorRef = useRef<HTMLSpanElement | null>(null);
-  const containerRef = useRef<HTMLElement | null>(null);
+  const containerRef = useRef<HTMLSpanElement | null>(null);
 
   const textArray = useMemo(() => (Array.isArray(text) ? text : [text]), [text]);
 
@@ -158,17 +160,21 @@ export function TextType({
 
   const shouldHideCursor = hideCursorWhileTyping && (currentCharIndex < textArray[currentTextIndex].length || isDeleting);
 
+  const content = (
+    <>
+      <span style={{ color: getCurrentTextColor() }}>{displayedText}</span>
+      {showCursor ? (
+        <span ref={cursorRef} className={`${styles.cursor} ${cursorClassName} ${shouldHideCursor ? styles.cursorHidden : ''}`}>
+          {cursorCharacter}
+        </span>
+      ) : null}
+    </>
+  );
+
+  const resolvedClassName = `${styles.textType} ${className}`;
   return createElement(
-    Component as any,
-    {
-      ref: containerRef,
-      className: `${styles.textType} ${className}`,
-    },
-    <span style={{ color: getCurrentTextColor() }}>{displayedText}</span>,
-    showCursor ? (
-      <span ref={cursorRef} className={`${styles.cursor} ${cursorClassName} ${shouldHideCursor ? styles.cursorHidden : ''}`}>
-        {cursorCharacter}
-      </span>
-    ) : null
+    Component,
+    { className: resolvedClassName },
+    <span ref={containerRef}>{content}</span>
   );
 }
