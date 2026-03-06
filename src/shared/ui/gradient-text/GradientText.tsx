@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef, type CSSProperties, type ReactNode } from 'react';
-import { motion, useMotionValue, useAnimationFrame, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useTransform } from 'framer-motion';
+import { useAnimationPerformanceGate } from '@/shared/lib';
 import styles from './GradientText.module.css';
 
 type Direction = 'horizontal' | 'vertical' | 'diagonal';
@@ -28,37 +29,57 @@ export function GradientText({
   yoyo = true,
 }: GradientTextProps) {
   const [isPaused, setIsPaused] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const progress = useMotionValue(0);
   const elapsedRef = useRef(0);
   const lastTimeRef = useRef<number | null>(null);
+  const { shouldAnimate } = useAnimationPerformanceGate({
+    targetRef: containerRef,
+    rootMargin: '120px',
+    disableLowPerformanceGate: true,
+  });
 
   const animationDuration = animationSpeed * 1000;
 
-  useAnimationFrame((time) => {
-    if (isPaused) {
+  useEffect(() => {
+    if (!shouldAnimate) {
       lastTimeRef.current = null;
       return;
     }
 
-    if (lastTimeRef.current === null) {
+    let frameId = 0;
+    const animate = (time: number) => {
+      if (isPaused) {
+        lastTimeRef.current = null;
+        frameId = requestAnimationFrame(animate);
+        return;
+      }
+
+      if (lastTimeRef.current === null) {
+        lastTimeRef.current = time;
+        frameId = requestAnimationFrame(animate);
+        return;
+      }
+
+      const deltaTime = time - lastTimeRef.current;
       lastTimeRef.current = time;
-      return;
-    }
+      elapsedRef.current += deltaTime;
 
-    const deltaTime = time - lastTimeRef.current;
-    lastTimeRef.current = time;
-    elapsedRef.current += deltaTime;
+      if (yoyo) {
+        const fullCycle = animationDuration * 2;
+        const cycleTime = elapsedRef.current % fullCycle;
+        if (cycleTime < animationDuration) progress.set((cycleTime / animationDuration) * 100);
+        else progress.set(100 - ((cycleTime - animationDuration) / animationDuration) * 100);
+      } else {
+        progress.set((elapsedRef.current / animationDuration) * 100);
+      }
 
-    if (yoyo) {
-      const fullCycle = animationDuration * 2;
-      const cycleTime = elapsedRef.current % fullCycle;
-      if (cycleTime < animationDuration) progress.set((cycleTime / animationDuration) * 100);
-      else progress.set(100 - ((cycleTime - animationDuration) / animationDuration) * 100);
-      return;
-    }
+      frameId = requestAnimationFrame(animate);
+    };
 
-    progress.set((elapsedRef.current / animationDuration) * 100);
-  });
+    frameId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frameId);
+  }, [animationDuration, isPaused, progress, shouldAnimate, yoyo]);
 
   useEffect(() => {
     elapsedRef.current = 0;
@@ -90,6 +111,7 @@ export function GradientText({
 
   return (
     <motion.div
+      ref={containerRef}
       className={`${styles.animatedGradientText} ${showBorder ? styles.withBorder : ''} ${className}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

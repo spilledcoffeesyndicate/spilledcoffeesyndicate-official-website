@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { BOOK_CALL_CTA, GET_FREE_ESTIMATE_CTA, MVP_DELIVERY_HOURS, RESPONSE_TIME_HOURS } from '@/shared/config';
+import { BOOK_CALL_CTA, GET_FREE_ESTIMATE_CTA, MVP_DELIVERY_HOURS } from '@/shared/config';
 import { ElectricBorder, Lightning } from '@/shared/ui';
 
 export function Hero() {
@@ -60,9 +60,6 @@ export function Hero() {
           </ElectricBorder>
         </motion.div>
 
-        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="mt-6 text-sm text-white/50 font-mono">
-          Response time: {RESPONSE_TIME_HOURS} hour
-        </motion.p>
       </div>
     </section>
   );

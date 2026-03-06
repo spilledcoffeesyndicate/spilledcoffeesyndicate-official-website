@@ -60,3 +60,18 @@
   opacity: 0.3;
   background: linear-gradient(-30deg, var(--electric-light-color), transparent, var(--electric-border-color));
 }
+
+@media (max-width: 768px) {
+  .glowPrimary {
+    filter: blur(0.5px);
+  }
+
+  .glowSecondary {
+    filter: blur(2px);
+  }
+
+  .backgroundGlow {
+    filter: blur(20px);
+    opacity: 0.24;
+  }
+}

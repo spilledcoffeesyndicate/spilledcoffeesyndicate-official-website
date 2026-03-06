@@ -21,9 +21,9 @@ export function Faq() {
           <p className="text-white/70">Everything you need to know before we start.</p>
         </motion.div>
 
-        <div className="space-y-2">
+        <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="space-y-2">
           {FAQ_ITEMS.map((faq, index) => (
-            <motion.div key={faq.question} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="overflow-hidden">
+            <div key={faq.question} className="overflow-hidden">
               <SpotlightCard spotlightColor="rgba(34, 197, 94, 0.1)" className="!p-0 !rounded-lg !border !border-white/10 !bg-white/5 overflow-hidden">
                 <button
                   onClick={() => setOpenIndex((current) => (current === index ? null : index))}
@@ -42,9 +42,9 @@ export function Faq() {
                   ) : null}
                 </AnimatePresence>
               </SpotlightCard>
-            </motion.div>
+            </div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

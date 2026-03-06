@@ -18,11 +18,11 @@ export function Portfolio() {
           <p className="text-white/70">Real projects. Real deadlines.</p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {PORTFOLIO_PROJECTS.map((project, index) => {
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="grid md:grid-cols-3 gap-6">
+          {PORTFOLIO_PROJECTS.map((project) => {
             const Icon = project.icon;
             return (
-              <motion.div key={project.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.1 }}>
+              <div key={project.title}>
                 <SpotlightCard
                   spotlightColor="rgba(34, 197, 94, 0.15)"
                   className="group !p-6 !rounded-lg !border-white/10 hover:!border-accent-500/50 !bg-white/5 !transition-colors"
@@ -41,10 +41,10 @@ export function Portfolio() {
                     ))}
                   </div>
                 </SpotlightCard>
-              </motion.div>
+              </div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </PixelBlast>
   );

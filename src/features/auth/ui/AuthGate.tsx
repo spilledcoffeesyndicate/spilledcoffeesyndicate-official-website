@@ -1,15 +1,23 @@
 'use client';
 
-import { type FormEvent, useEffect, useRef, useState } from 'react';
+import { type FormEvent, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { AUTH_PASSWORD_HASH, AUTH_STORAGE_KEY } from '../config/constants';
 import { hashPassword } from '../lib/hash-password';
 import type { AuthGateProps } from '../model/types';
 
 export function AuthGate({ children }: AuthGateProps) {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(() => {
-    if (typeof window === 'undefined') return null;
-    return sessionStorage.getItem(AUTH_STORAGE_KEY) === '1';
-  });
+  const isAuthenticated = useSyncExternalStore(
+    (onStoreChange) => {
+      window.addEventListener('storage', onStoreChange);
+      window.addEventListener('auth-state-change', onStoreChange);
+      return () => {
+        window.removeEventListener('storage', onStoreChange);
+        window.removeEventListener('auth-state-change', onStoreChange);
+      };
+    },
+    () => sessionStorage.getItem(AUTH_STORAGE_KEY) === '1',
+    () => null
+  );
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const passwordInputRef = useRef<HTMLInputElement | null>(null);
@@ -25,7 +33,7 @@ export function AuthGate({ children }: AuthGateProps) {
     const inputHash = await hashPassword(password);
     if (inputHash === AUTH_PASSWORD_HASH) {
       sessionStorage.setItem(AUTH_STORAGE_KEY, '1');
-      setIsAuthenticated(true);
+      window.dispatchEvent(new Event('auth-state-change'));
       return;
     }
     setError('Wrong password');

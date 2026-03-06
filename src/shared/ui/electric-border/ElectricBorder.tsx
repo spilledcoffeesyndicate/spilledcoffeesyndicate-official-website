@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useCallback, type CSSProperties, type ReactNode } from 'react';
+import { useAnimationPerformanceGate } from '@/shared/lib';
 import styles from './ElectricBorder.module.css';
 
 type ElectricBorderProps = {
@@ -26,7 +27,11 @@ export function ElectricBorder({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const animationRef = useRef<number | null>(null);
   const timeRef = useRef(0);
-  const lastFrameTimeRef = useRef(0);
+  const { shouldAnimate, isLowPerformanceDevice } = useAnimationPerformanceGate({
+    targetRef: containerRef,
+    rootMargin: '120px',
+    disableLowPerformanceGate: true,
+  });
 
   const random = useCallback((x: number) => {
     return (Math.sin(x * 12.9898) * 43758.5453) % 1;
@@ -149,7 +154,7 @@ export function ElectricBorder({
   useEffect(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
-    if (!canvas || !container) return;
+    if (!canvas || !container || !shouldAnimate) return;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -160,18 +165,22 @@ export function ElectricBorder({
     const amplitude = chaos;
     const frequency = 10;
     const baseFlatness = 0;
-    const displacement = 60;
+    const displacement = isLowPerformanceDevice ? 48 : 60;
     const borderOffset = 60;
+    const targetFps = isLowPerformanceDevice ? 18 : 28;
+    const frameInterval = 1000 / targetFps;
+    let lastRenderTime = 0;
 
     const updateSize = () => {
       const rect = container.getBoundingClientRect();
       const width = rect.width + borderOffset * 2;
       const height = rect.height + borderOffset * 2;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, isLowPerformanceDevice ? 1 : 1.5);
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(dpr, dpr);
       return { width, height };
     };
@@ -179,11 +188,14 @@ export function ElectricBorder({
     let { width, height } = updateSize();
 
     const drawElectricBorder = (currentTime: number) => {
-      const deltaTime = (currentTime - lastFrameTimeRef.current) / 1000;
-      timeRef.current += deltaTime * speed;
-      lastFrameTimeRef.current = currentTime;
+      animationRef.current = requestAnimationFrame(drawElectricBorder);
+      if (currentTime - lastRenderTime < frameInterval) return;
 
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const deltaTime = lastRenderTime === 0 ? 0 : (currentTime - lastRenderTime) / 1000;
+      timeRef.current += deltaTime * speed;
+      lastRenderTime = currentTime;
+
+      const dpr = Math.min(window.devicePixelRatio || 1, isLowPerformanceDevice ? 1 : 1.5);
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.scale(dpr, dpr);
@@ -200,7 +212,8 @@ export function ElectricBorder({
       const radius = Math.min(borderRadius, Math.min(borderWidth, borderHeight) / 2);
 
       const approximatePerimeter = 2 * (borderWidth + borderHeight) + 2 * Math.PI * radius;
-      const sampleCount = Math.floor(approximatePerimeter / 2);
+      const sampleSpacing = isLowPerformanceDevice ? 6 : 4;
+      const sampleCount = Math.max(80, Math.floor(approximatePerimeter / sampleSpacing));
 
       ctx.beginPath();
       for (let i = 0; i <= sampleCount; i++) {
@@ -219,7 +232,6 @@ export function ElectricBorder({
 
       ctx.closePath();
       ctx.stroke();
-      animationRef.current = requestAnimationFrame(drawElectricBorder);
     };
 
     const resizeObserver = new ResizeObserver(() => {
@@ -234,7 +246,7 @@ export function ElectricBorder({
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
       resizeObserver.disconnect();
     };
-  }, [borderRadius, chaos, color, getRoundedRectPoint, octavedNoise, speed]);
+  }, [borderRadius, chaos, color, getRoundedRectPoint, isLowPerformanceDevice, octavedNoise, shouldAnimate, speed]);
 
   const componentStyle = {
     '--electric-border-color': color,

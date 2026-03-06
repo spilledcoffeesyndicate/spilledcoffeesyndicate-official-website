@@ -1,11 +1,89 @@
 'use client';
 
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import Script from 'next/script';
 import { BOOK_CALL_CTA, CALL_DURATION_MINUTES, EXTERNAL_LINKS } from '@/shared/config';
 import { GradientText, PixelBlast } from '@/shared/ui';
 
 export function FinalCta() {
+  const calendlyUrl = `${EXTERNAL_LINKS.calendly}?background_color=1a1a1a&hide_gdpr_banner=1&text_color=4ade80&primary_color=22c55e`;
+  const [isCalendlyReady, setIsCalendlyReady] = useState(false);
+  const calendlyWidgetRef = useRef<HTMLDivElement | null>(null);
+  const calendlyContainerRef = useRef<HTMLDivElement | null>(null);
+  const skeletonShownAtRef = useRef<number>(0);
+
+  const initializeCalendlyWidget = useCallback(() => {
+    const calendlyWidget = calendlyWidgetRef.current;
+    const calendly = (window as Window & { Calendly?: { initInlineWidget: (options: { url: string; parentElement: Element }) => void } }).Calendly;
+    if (!calendlyWidget || !calendly) {
+      return;
+    }
+
+    calendlyWidget.innerHTML = '';
+    calendly.initInlineWidget({
+      url: calendlyUrl,
+      parentElement: calendlyWidget,
+    });
+  }, [calendlyUrl]);
+
+  useEffect(() => {
+    const container = calendlyContainerRef.current;
+    if (!container) {
+      return;
+    }
+    skeletonShownAtRef.current = Date.now();
+    let revealTimeoutId: ReturnType<typeof setTimeout> | null = null;
+    let iframeFallbackTimeoutId: ReturnType<typeof setTimeout> | null = null;
+    let activeIframe: HTMLIFrameElement | null = null;
+
+    const revealCalendly = () => {
+      const elapsedMs = Date.now() - skeletonShownAtRef.current;
+      const minimumSkeletonMs = 600;
+      const remainingMs = Math.max(minimumSkeletonMs - elapsedMs, 0);
+      if (revealTimeoutId) {
+        clearTimeout(revealTimeoutId);
+      }
+      revealTimeoutId = setTimeout(() => {
+        setIsCalendlyReady(true);
+      }, remainingMs);
+    };
+
+    const attachIframeListeners = () => {
+      const iframe = container.querySelector('iframe');
+      if (!iframe || iframe === activeIframe) {
+        return;
+      }
+      activeIframe = iframe;
+      activeIframe.addEventListener('load', revealCalendly, { once: true });
+      if (iframeFallbackTimeoutId) {
+        clearTimeout(iframeFallbackTimeoutId);
+      }
+      iframeFallbackTimeoutId = setTimeout(revealCalendly, 2500);
+    };
+
+    const observer = new MutationObserver(() => {
+      attachIframeListeners();
+    });
+
+    observer.observe(container, { childList: true, subtree: true });
+    initializeCalendlyWidget();
+    attachIframeListeners();
+
+    return () => {
+      observer.disconnect();
+      if (activeIframe) {
+        activeIframe.removeEventListener('load', revealCalendly);
+      }
+      if (revealTimeoutId) {
+        clearTimeout(revealTimeoutId);
+      }
+      if (iframeFallbackTimeoutId) {
+        clearTimeout(iframeFallbackTimeoutId);
+      }
+    };
+  }, [initializeCalendlyWidget]);
+
   return (
     <PixelBlast className="py-24">
       <div className="max-w-4xl mx-auto px-6">
@@ -32,26 +110,29 @@ export function FinalCta() {
             <span>Cancel anytime before we start</span>
           </div>
         </motion.div>
-
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} id="calendly" className="mt-16 flex justify-center">
-          <div className="aspect-[4/3] w-full max-w-xl max-h-[500px] bg-white/5 border border-white/10 rounded-lg flex items-center justify-center mx-auto">
-            <div className="flex flex-col items-center justify-center text-center p-8">
-              <p className="text-white/70 mb-4">Calendly widget placeholder</p>
-              <p className="text-sm text-white/50 mb-6">Add your Calendly embed URL or iframe here</p>
-              <a
-                href={EXTERNAL_LINKS.calendly}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block px-6 py-3 border border-accent-500 text-accent-400 font-mono hover:bg-accent-500/20 transition"
-              >
-                <span className="inline-flex items-center gap-2">
-                  Book via Calendly <ArrowRight className="w-4 h-4" strokeWidth={2} />
-                </span>
-              </a>
-            </div>
-          </div>
-        </motion.div>
       </div>
+
+      <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} id="calendly" className="mt-12">
+        <div className="w-full max-w-6xl mx-auto">
+          <div ref={calendlyContainerRef} className="relative">
+            {isCalendlyReady ? null : (
+              <div className="absolute inset-0 z-10 rounded-md border border-white/10 bg-white/5 p-6 md:p-8">
+                <div className="h-6 w-44 rounded bg-white/10 animate-pulse" />
+                <div className="mt-8 h-10 w-full rounded bg-white/10 animate-pulse" />
+                <div className="mt-5 h-10 w-full rounded bg-white/10 animate-pulse" />
+                <div className="mt-5 h-40 w-full rounded bg-white/10 animate-pulse" />
+              </div>
+            )}
+            <div
+              ref={calendlyWidgetRef}
+              className="calendly-inline-widget"
+              data-url={calendlyUrl}
+              style={{ width: '100%', minWidth: '0', height: '980px' }}
+            />
+            <Script src="https://assets.calendly.com/assets/external/widget.js" strategy="lazyOnload" onLoad={initializeCalendlyWidget} />
+          </div>
+        </div>
+      </motion.div>
     </PixelBlast>
   );
 }

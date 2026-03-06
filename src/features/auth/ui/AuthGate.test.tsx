@@ -1,5 +1,6 @@
 import { vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { AUTH_STORAGE_KEY } from '../config/constants';
 import { AuthGate } from './AuthGate';
 
 const mockHashPassword = vi.hoisted(() => vi.fn());
@@ -51,6 +52,19 @@ describe('AuthGate', () => {
       target: { value: 'correct-pass' },
     });
     fireEvent.click(screen.getByRole('button', { name: 'Enter' }));
+
+    await waitFor(() => {
+      expect(screen.getByText('protected content')).toBeInTheDocument();
+    });
+  });
+
+  it('renders protected content when session is already authenticated', async () => {
+    sessionStorage.setItem(AUTH_STORAGE_KEY, '1');
+    render(
+      <AuthGate>
+        <div>protected content</div>
+      </AuthGate>
+    );
 
     await waitFor(() => {
       expect(screen.getByText('protected content')).toBeInTheDocument();
