@@ -1,1 +1,0 @@
-export { Lightning } from './Lightning';

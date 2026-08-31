@@ -1,1 +1,0 @@
-export { SpotlightCard } from './SpotlightCard';
